@@ -171,23 +171,6 @@ article img {
     border: 1px solid var(--text-color);
 }
 
-.tip-section {
-    text-align: left;
-    margin: 1.5rem 0;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-}
-
-.copy-address {
-    color: var(--text-color);
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.copy-address:hover {
-    opacity: 0.85;
-}
-
 /* ——————— BACK TO TOP ——————— */
 .back-to-top {
     text-align: center;
