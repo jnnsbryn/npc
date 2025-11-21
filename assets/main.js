@@ -6,7 +6,7 @@ const CONFIG = {
   POSTS_PATH: 'post'
 };
 
-// === DOM ===
+// === DOM Elements ===
 const postListEl = document.getElementById('post-list');
 const contentEl = document.getElementById('content');
 const searchEl = document.getElementById('search');
@@ -24,10 +24,7 @@ let displayedCount = 0;
 let currentTag = null;
 const LOAD_STEP = 10;
 
-// Set tahun
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// === PARSING ===
+// === PARSING FRONT MATTER ===
 function parseFrontMatter(md) {
   let title = 'Tanpa Judul';
   let date = '';
@@ -61,7 +58,7 @@ function parseFrontMatter(md) {
   return { title, date, tags, body };
 }
 
-// === FETCH ===
+// === FETCH POSTS FROM GITHUB ===
 async function fetchPosts() {
   try {
     const treeUrl = `https://api.github.com/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/git/trees/${CONFIG.BRANCH}?recursive=1`;
@@ -98,12 +95,12 @@ async function fetchPosts() {
     renderAllPosts();
     loadFromHash();
   } catch (err) {
-    console.error(err);
+    console.error('[Error]', err);
     postListEl.innerHTML = `<li style="color:#e53e3e">⚠️ Gagal muat: ${err.message}</li>`;
   }
 }
 
-// === RENDER ===
+// === RENDERING ===
 function renderAllPosts() {
   currentTag = null;
   tagHeaderEl.style.display = 'none';
@@ -153,7 +150,10 @@ function renderPostList(posts, reset = true) {
 
   displayedCount += slice.length;
 
+  // Remove old load-more button
   document.getElementById('load-more')?.remove();
+
+  // Add new button if more posts exist
   if (displayedCount < posts.length) {
     const btn = document.createElement('button');
     btn.id = 'load-more';
@@ -172,14 +172,13 @@ function loadPost(post) {
       const { title, date, tags, body } = parseFrontMatter(md);
       const dateStr = date ? `<small>${new Date(date).toLocaleDateString('id-ID')}</small>` : '';
       
-      // Render tags di footer
-      const tagLinks = tags.map(t => 
-        `<a href="#tag/${t}" class="tag">${t}</a>`
-      ).join(' ');
-
+      // Convert relative image paths → absolute
       const fixedBody = body.replace(
         /!\[([^\]]*)\]\(([^)]+)\)/g,
-        (match, alt, src) => src.startsWith('http') ? match : `![${alt}](/post/${post.folderName}/${src})`
+        (match, alt, src) => {
+          if (src.startsWith('http')) return match; // external
+          return `![${alt}](/post/${post.folderName}/${src})`;
+        }
       );
 
       const html = marked.parse(fixedBody, { gfm: true, breaks: true });
@@ -187,19 +186,19 @@ function loadPost(post) {
         <h2>${title} ${dateStr}</h2>
         ${html}
         <footer class="post-meta">
-          <small>🏷️ ${tagLinks}</small>
+          <small>🏷️ ${tags.map(t => `<a href="#tag/${t}" class="tag">${t}</a>`).join(' ')}</small>
         </footer>
       `;
       window.scrollTo(0, 0);
     })
     .catch(err => {
-      contentEl.innerHTML = `<p style="color:#e53e3e">Gagal: ${err.message}</p>`;
+      contentEl.innerHTML = `<p style="color:#e53e3e">Gagal memuat konten: ${err.message}</p>`;
     });
 }
 
 // === TAGS MODAL ===
 function showTagsModal() {
-  // Hitung frekuensi tag
+  // Count tag frequency
   const tagCount = {};
   allPosts.forEach(p => {
     p.tags.forEach(t => {
@@ -207,7 +206,7 @@ function showTagsModal() {
     });
   });
 
-  // Urut alfabet
+  // Sort alphabetically
   const sortedTags = Object.keys(tagCount).sort();
 
   tagsListEl.innerHTML = sortedTags.map(tag => `
@@ -281,7 +280,7 @@ function loadFromHash() {
 }
 window.addEventListener('hashchange', loadFromHash);
 
-// === EVENT LISTENERS ===
+// === MODAL & UI EVENTS ===
 showTagsBtn?.addEventListener('click', showTagsModal);
 closeTagsBtn?.addEventListener('click', hideTagsModal);
 clearTagBtn?.addEventListener('click', () => {
