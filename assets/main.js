@@ -108,22 +108,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === RENDER ===
   function renderAllPosts() {
-    isViewingPost = false;
-    currentTag = null;
-    if (postListEl) postListEl.style.display = 'block';
-    if (tagHeaderEl) tagHeaderEl.style.display = 'none';
-    renderPostList(allPosts);
-  }
+  isViewingPost = false;
+  currentTag = null;
+  if (postListEl) postListEl.style.display = 'block';
+  if (tagHeaderEl) tagHeaderEl.style.display = 'none';
+  if (contentEl) contentEl.innerHTML = ''; // 🔑 Kunci perbaikan
+  renderPostList(allPosts);
+}
 
-  function renderTagPage(tag) {
-    isViewingPost = false;
-    currentTag = tag;
-    if (postListEl) postListEl.style.display = 'block';
-    if (currentTagEl) currentTagEl.textContent = tag;
-    if (tagHeaderEl) tagHeaderEl.style.display = 'block';
-    const filtered = allPosts.filter(p => p.tags.includes(tag));
-    renderPostList(filtered);
-  }
+function renderTagPage(tag) {
+  isViewingPost = false;
+  currentTag = tag;
+  if (postListEl) postListEl.style.display = 'block';
+  if (tagHeaderEl) tagHeaderEl.style.display = 'block';
+  if (currentTagEl) currentTagEl.textContent = tag;
+  if (contentEl) contentEl.innerHTML = ''; // 🔑 Kunci perbaikan
+  renderPostList(allPosts.filter(p => p.tags.includes(tag)));
+}
 
   function renderPostList(posts, reset = true) {
     if (isViewingPost || !postListEl) return;
