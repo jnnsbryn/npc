@@ -35,7 +35,6 @@
       <div class="controls">
         <input type="text" id="search" class="search" placeholder="Cari catatan..." aria-label="Cari catatan">
         <button id="theme-toggle" class="theme-toggle" aria-label="Ganti tema">🌓</button>
-        <button id="show-tags" class="tag-btn" aria-label="Lihat semua topik">🏷️</button>
       </div>
     </header>
 
@@ -48,23 +47,12 @@
       <div id="content"></div>
     </main>
 
-    <!-- Modal: Semua Tag -->
-    <div id="tags-modal" class="modal" style="display:none">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Topik yang Dibahas</h3>
-          <button id="close-tags">&times;</button>
-        </div>
-        <div id="tags-list" class="tags-list"></div>
-      </div>
-    </div>
-
     <footer>
       (&#x2184;) Jeannes Bryan
     </footer>
   </div>
 
-  <script src="assets/marked.umd.min.js"></script>
+  <script src="assets/marked.min.js"></script>
   <script type="module" src="assets/main.js"></script>
 </body>
 </html>

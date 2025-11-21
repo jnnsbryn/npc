@@ -47,7 +47,7 @@ header h1 { margin: 0; font-weight: 600; }
 header h1 a { color: inherit; text-decoration: none; }
 
 .controls { display: flex; gap: 0.5rem; align-items: center; }
-.search, .theme-toggle, .tag-btn {
+.search, .theme-toggle {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -55,9 +55,9 @@ header h1 a { color: inherit; text-decoration: none; }
   color: var(--fg);
   font-family: inherit;
 }
-.theme-toggle, .tag-btn { width: 2.5rem; text-align: center; cursor: pointer; }
+.theme-toggle { width: 2.5rem; text-align: center; cursor: pointer; }
 
-/* Tag Header */
+/* Tag Header (masih dipakai untuk #tag/xxx) */
 .tag-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
@@ -87,9 +87,7 @@ header h1 a { color: inherit; text-decoration: none; }
   text-decoration: none;
   font-size: 0.85em;
 }
-.tag:hover {
-  background: var(--tag-hover);
-}
+.tag:hover { background: var(--tag-hover); }
 
 /* Load More */
 .load-more {
@@ -112,65 +110,6 @@ header h1 a { color: inherit; text-decoration: none; }
 }
 .btn.small { padding: 0.3em 0.6em; }
 .btn:hover { opacity: 0.9; }
-
-/* Modal */
-.modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: var(--bg);
-  color: var(--fg);
-  width: 95%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow: hidden;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-.modal-header {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-header h3 { margin: 0; }
-#close-tags {
-  background: none; border: none; font-size: 1.5rem; cursor: pointer;
-  color: var(--fg); opacity: 0.6;
-}
-#close-tags:hover { opacity: 1; }
-
-.tags-list {
-  padding: 1rem;
-  overflow-y: auto;
-  max-height: 60vh;
-}
-.tag-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.tag-item:last-child { border-bottom: none; }
-.tag-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
-.tag-count {
-  background: var(--card-bg);
-  padding: 0.2em 0.6em;
-  border-radius: 12px;
-  font-size: 0.85em;
-}
 
 /* Single Post View */
 .post-single {

@@ -12,13 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const contentEl = document.getElementById('content');
   const searchEl = document.getElementById('search');
   const themeToggleEl = document.getElementById('theme-toggle');
-  const showTagsBtn = document.getElementById('show-tags');
-  const tagsModalEl = document.getElementById('tags-modal');
-  const tagsListEl = document.getElementById('tags-list');
   const tagHeaderEl = document.getElementById('tag-header');
   const currentTagEl = document.getElementById('current-tag');
   const clearTagBtn = document.getElementById('clear-tag');
-  const closeTagsBtn = document.getElementById('close-tags');
 
   if (!postListEl || !contentEl) {
     console.warn('[NPC] Elemen utama tidak ditemukan.');
@@ -49,11 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const key = line.substring(0, i).trim();
           const value = line.substring(i + 1).trim();
           
-          if (key === 'title') {
-            title = value.replace(/^["']|["']$/g, '');
-          } else if (key === 'date') {
-            date = value;
-          } else if (key === 'tags') {
+          if (key === 'title') title = value.replace(/^["']|["']$/g, '');
+          else if (key === 'date') date = value;
+          else if (key === 'tags') {
             let tagStr = value.replace(/[[\]"]/g, '').trim();
             tags = tagStr.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
           }
@@ -102,29 +96,29 @@ document.addEventListener('DOMContentLoaded', () => {
       loadFromHash();
     } catch (err) {
       console.error('[Error]', err);
-      postListEl.innerHTML = `<li style="color:#e53e3e">⚠️ Gagal muat: ${err.message}</li>`;
+      if (postListEl) postListEl.innerHTML = `<li style="color:#e53e3e">⚠️ Gagal muat: ${err.message}</li>`;
     }
   }
 
   // === RENDER ===
   function renderAllPosts() {
-  isViewingPost = false;
-  currentTag = null;
-  if (postListEl) postListEl.style.display = 'block';
-  if (tagHeaderEl) tagHeaderEl.style.display = 'none';
-  if (contentEl) contentEl.innerHTML = ''; // 🔑 Kunci perbaikan
-  renderPostList(allPosts);
-}
+    isViewingPost = false;
+    currentTag = null;
+    if (postListEl) postListEl.style.display = 'block';
+    if (tagHeaderEl) tagHeaderEl.style.display = 'none';
+    if (contentEl) contentEl.innerHTML = '';
+    renderPostList(allPosts);
+  }
 
-function renderTagPage(tag) {
-  isViewingPost = false;
-  currentTag = tag;
-  if (postListEl) postListEl.style.display = 'block';
-  if (tagHeaderEl) tagHeaderEl.style.display = 'block';
-  if (currentTagEl) currentTagEl.textContent = tag;
-  if (contentEl) contentEl.innerHTML = ''; // 🔑 Kunci perbaikan
-  renderPostList(allPosts.filter(p => p.tags.includes(tag)));
-}
+  function renderTagPage(tag) {
+    isViewingPost = false;
+    currentTag = tag;
+    if (postListEl) postListEl.style.display = 'block';
+    if (tagHeaderEl) tagHeaderEl.style.display = 'block';
+    if (currentTagEl) currentTagEl.textContent = tag;
+    if (contentEl) contentEl.innerHTML = '';
+    renderPostList(allPosts.filter(p => p.tags.includes(tag)));
+  }
 
   function renderPostList(posts, reset = true) {
     if (isViewingPost || !postListEl) return;
@@ -139,10 +133,7 @@ function renderTagPage(tag) {
       const li = document.createElement('li');
       li.className = 'post-item';
       const dateStr = post.date ? new Date(post.date).toLocaleDateString('id-ID') : '';
-      
-      const tagLinks = post.tags.map(t => 
-        `<a href="#tag/${t}" class="tag">${t}</a>`
-      ).join(' ');
+      const tagLinks = post.tags.map(t => `<a href="#tag/${t}" class="tag">${t}</a>`).join(' ');
 
       li.innerHTML = `
         <a href="#post/${post.folderName}" class="post-title">${post.title}</a>
@@ -177,6 +168,7 @@ function renderTagPage(tag) {
     isViewingPost = true;
     if (postListEl) postListEl.style.display = 'none';
     if (tagHeaderEl) tagHeaderEl.style.display = 'none';
+    if (contentEl) contentEl.innerHTML = 'Memuat...';
 
     fetch(post.rawUrl)
       .then(r => r.ok ? r.text() : Promise.reject(`HTTP ${r.status}`))
@@ -190,6 +182,7 @@ function renderTagPage(tag) {
         );
 
         const html = marked.parse(fixedBody, { gfm: true, breaks: true });
+        if (!contentEl) return;
         contentEl.innerHTML = `
           <article class="post-single">
             <a href="#" class="back-to-list">&larr; Kembali ke daftar</a>
@@ -203,7 +196,6 @@ function renderTagPage(tag) {
           </article>
         `;
 
-        // Setup back buttons
         document.querySelectorAll('.back-to-list').forEach(btn => {
           btn.onclick = e => {
             e.preventDefault();
@@ -215,32 +207,8 @@ function renderTagPage(tag) {
         window.scrollTo(0, 0);
       })
       .catch(err => {
-        contentEl.innerHTML = `<p style="color:#e53e3e">Gagal memuat konten: ${err.message}</p>`;
+        if (contentEl) contentEl.innerHTML = `<p style="color:#e53e3e">Gagal: ${err.message}</p>`;
       });
-  }
-
-  // === TAGS MODAL ===
-  function showTagsModal() {
-    const tagCount = {};
-    allPosts.forEach(p => {
-      p.tags.forEach(t => {
-        tagCount[t] = (tagCount[t] || 0) + 1;
-      });
-    });
-
-    const sortedTags = Object.keys(tagCount).sort();
-    tagsListEl.innerHTML = sortedTags.map(tag => `
-      <div class="tag-item">
-        <a href="#tag/${tag}" class="tag-link" onclick="event.preventDefault(); hideTagsModal(); renderTagPage('${tag}');">${tag}</a>
-        <span class="tag-count">${tagCount[tag]}</span>
-      </div>
-    `).join('');
-
-    tagsModalEl.style.display = 'flex';
-  }
-
-  function hideTagsModal() {
-    tagsModalEl.style.display = 'none';
   }
 
   // === SEARCH ===
@@ -300,20 +268,10 @@ function renderTagPage(tag) {
   }
   window.addEventListener('hashchange', loadFromHash);
 
-  // === MODAL EVENTS ===
-  showTagsBtn?.addEventListener('click', showTagsModal);
-  closeTagsBtn?.addEventListener('click', hideTagsModal);
+  // === EVENTS ===
   clearTagBtn?.addEventListener('click', () => {
     history.pushState(null, '', '#');
     renderAllPosts();
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') hideTagsModal();
-  });
-
-  tagsModalEl?.addEventListener('click', e => {
-    if (e.target === tagsModalEl) hideTagsModal();
   });
 
   // === INIT ===
