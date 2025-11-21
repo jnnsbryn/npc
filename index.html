@@ -1,48 +1,70 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Hi, I'm Jeannes Bryan, a NPC who loves watching sports, a tech enthusiast, and a professional thinker.">
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:site" content="@jnnsbryn">
-		<meta property="og:type" content="website">
-		<meta property="og:image" content="assets/android-chrome-512x512.png">
-        <meta property="og:title" content="Jeannes Bryan | NPC">
-        <meta property="og:url" content="https://npc.my.id">
-        <meta property="og:site_name" content="Jeannes Bryan | NPC">
-        <meta property="og:description" content="Hi, I'm Jeannes Bryan, a NPC who loves watching sports, a tech enthusiast, and a professional thinker.">
-        <link rel="me" href="https://social.vivaldi.net/@jnnsbryn">
-        <link rel="stylesheet" href="assets/style.css">
-        <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-        <link rel="manifest" href="assets/site.webmanifest">
-        <title>Jeannes Bryan | NPC</title>
-    </head>
-    <body>
-        <div class="container">
-            <div class="page-header">
-                <h1><a href="/" title="Non Playable Character">NPC</a></h1>
-                <div class="header-divider"></div>
-            </div>
-            <h1>Hi I'm Jeannes Bryan,</h1>
-            <p>a <a href="https://npc.my.id">NPC</a> who loves watching sports, a tech enthusiast, and a professional thinker.</p>
-            <p>I'm also on <a href="https://x.com/jnnsbryn">X</a>, <a href="https://www.instagram.com/jnnsbryn">Instagram</a>, <a href="https://www.tiktok.com/@jnnsbryn">TikTok</a>, <a href="https://www.facebook.com/jnnsbryn/">Facebook</a>, <a href="https://www.linkedin.com/in/jnnsbryn">LinkedIn</a>, <a href="https://www.threads.com/@jnnsbryn">Threads</a>, and <a href="https://social.vivaldi.net/@jnnsbryn">Mastodon</a>.</p>
-            <p>You can read my articles on my <a href="https://t.me/s/jnnsbryn">Telegram channel</a>, and this website is mirrored on <a href="https://npc.on.btfs.io">BitTorrent File System (BTFS)</a>.</p>
-            <h2>My most recent posts:</h2>
-            <ul>
-                <li><a href="post/email-aman-privasi-terjaga-dengan-duckduckgo-email-protection">Email Aman, Privasi Terjaga dengan DuckDuckGo Email Protection</a></li>
-                <li><a href="post/menghosting-situs-web-anonim-di-jaringan-tor">Menghosting Situs Web Anonim di Jaringan TOR</a></li>
-                <li><a href="post/membuat-notes-and-password-manager-dengan-cryptomator-and-cloudflare-r2">Membuat Notes & Password Manager dengan Cryptomator & Cloudflare R2</a></li>
-            </ul>
-            <h2>My projects:</h2>
-            <ul>
-                <li><a href="project/perusahaan-fintech-lending-berizin-ojk">Perusahaan Fintech Lending Berizin OJK</a></li>
-            </ul>
-            <footer>
-                (&#x2184;) Jeannes Bryan
-            </footer>
+<!DOCTYPE html>
+<html lang="id" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NPC — Jeannes Bryan</title>
+  <meta name="description" content="Hi, I'm Jeannes Bryan, a NPC who loves watching sports, a tech enthusiast, and a professional thinker.">
+  <meta name="fediverse:creator" content="@jnnsbryn@vivaldi.net">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@jnnsbryn">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NPC — Jeannes Bryan">
+  <meta property="og:url" content="https://npc.my.id">
+  <meta property="og:description" content="Hi, I'm Jeannes Bryan, a NPC who loves watching sports, a tech enthusiast, and a professional thinker.">
+  <meta property="og:site_name" content="NPC — Jeannes Bryan">
+
+  <!-- 🌓 Hindari FOUC -->
+  <script>
+    (() => {
+      const t = localStorage.getItem('theme') || 'auto';
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', 
+        t === 'auto' ? (dark ? 'dark' : 'light') : t
+      );
+    })();
+  </script>
+
+  <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>NPC</text></svg>">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/" title="Non Playable Character">NPC</a></h1>
+      <div class="controls">
+        <input type="text" id="search" class="search" placeholder="Cari catatan..." aria-label="Cari catatan">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Ganti tema">🌓</button>
+        <button id="show-tags" class="tag-btn" aria-label="Lihat semua topik">🏷️</button>
+      </div>
+    </header>
+
+    <main>
+      <div id="tag-header" class="tag-header" style="display:none">
+        <h2>🔖 Tag: <span id="current-tag"></span></h2>
+        <button id="clear-tag" class="btn small">← Kembali ke semua</button>
+      </div>
+      <ul id="post-list" class="post-list"></ul>
+      <div id="content"></div>
+    </main>
+
+    <!-- Modal: Semua Tag -->
+    <div id="tags-modal" class="modal" style="display:none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Topik yang Dibahas</h3>
+          <button id="close-tags">&times;</button>
         </div>
-    </body>
+        <div id="tags-list" class="tags-list"></div>
+      </div>
+    </div>
+
+    <footer>
+      (&#x2184;) Jeannes Bryan
+    </footer>
+  </div>
+
+  <script src="assets/marked.umd.min.js"></script>
+  <script type="module" src="assets/main.js"></script>
+</body>
 </html>
